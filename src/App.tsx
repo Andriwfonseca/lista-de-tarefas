@@ -1,11 +1,56 @@
-import {Container} from './App.styles';
+import { useState } from 'react';
+import * as C from './App.styles';
+import { Item } from './types/Item';
+import { ListItem } from './components/ListItem';
+import { AddArea } from './components/AddArea';
 
 const App = () => {
-  return (
-    <Container>
-      ...
-    </Container>
 
+  const [list, setList] = useState<Item[]>([
+    { id: 1, name: 'Comprar um teclado novo', done: false },
+    { id: 2, name: 'Estudar Java', done: true },
+    { id: 3, name: 'Estudar React JS', done: true },
+    { id: 4, name: 'Criar um site pra minha mãe', done: false }
+  ]);
+
+  const handleAddTask = (taskName: string) =>{
+    let newList = [...list];
+    newList.push({
+      id: list.length + 1,
+      name: taskName,
+      done: false
+    });
+    setList(newList);
+  }
+
+  const handleTaskChange = (id: number, done: boolean) => {
+    let newList = [...list];
+
+    for(let i in newList){
+      if(newList[i].id === id){
+        newList[i].done = done;
+      }
+    }
+    setList(newList);
+  }
+
+  return (
+    <C.Container>
+      <C.Area>
+        <C.Header>Lista de Tarefas</C.Header>
+
+        <AddArea onEnter={handleAddTask} />
+
+        {list.map((item, index) => (
+          <ListItem 
+            key={index} 
+            item={item} 
+            onChange={handleTaskChange}
+          />
+        ))}
+
+      </C.Area>
+    </C.Container>
   );
 
 }
